@@ -2,7 +2,6 @@
 
 # LICENSE:
 # Done by: https://github.com/Muko-Tabi
-# Twilight support added by: https://github.com/LeMoonStar
 # This script is licensed under the MIT License.
 
 set -euo pipefail
@@ -34,13 +33,10 @@ function log_highlight() { log "highlight" "$1"; }
 
 # Download URL globals
 # Zen Stable
-ZEN_STABLE="https://github.com/zen-browser/desktop/releases/latest/download/zen-x86_64.AppImage"
-# Zen Twilight
-ZEN_TWILIGHT="https://github.com/zen-browser/desktop/releases/download/twilight/zen-x86_64.AppImage"
+ZEN_STABLE="https://github.com/istnein/zenplus-desktop/releases/latest/download/zen-x86_64.AppImage"
 
 # Filename base globals
 ZEN_STABLE_NAME_BASE="ZenBrowser"
-ZEN_TWILIGHT_NAME_BASE="ZenTwilight"
 
 # Function to check if AVX2 is supported
 check_avx2_support() {
@@ -72,20 +68,14 @@ check_zsync_installed() {
 
 # Kawaii ASCII Art for the script
 kawaii_art() {
-    local is_twilight="$1"
     local file_base
-
-    if [[ "$is_twilight" == "1" ]]; then
-        file_base="$ZEN_TWILIGHT_NAME_BASE"
-    else
-        file_base="$ZEN_STABLE_NAME_BASE"
-    fi
+    file_base="$ZEN_STABLE_NAME_BASE"
 
     log_info "╔════════════════════════════════════════════════════╗"
     log_info "║                                                    ║"
     log_info "║    (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧  Zen Browser Installer            ║"
     log_info "║                                                    ║"
- 
+
     if check_installation_status "$file_base"; then
         log_info "║    Status: Zen Browser Installed                   ║"
     else
@@ -120,7 +110,7 @@ download_until_success() {
             "install")
                 log_info "Installing Zen Browser..."
                 ;;
-        esac 
+        esac
         if curl -# -L --connect-timeout 30 --max-time 600 "$url" -o "$output_path"; then
             case "$mode" in
                 "zsync")
@@ -224,28 +214,14 @@ uninstall_appimage() {
 }
 
 check_for_updates() {
-    local is_twilight="$1"
     local zsync_url
     local zsync_file
     local appimage_url
     local file_base
+    file_base="$ZEN_STABLE_NAME_BASE"
+    zsync_url="$ZEN_STABLE.zsync"
+    appimage_url="$ZEN_STABLE"
 
-    if [[ "$is_twilight" == 1 ]]; then
-        file_base="$ZEN_TWILIGHT_NAME_BASE"
-    else
-        file_base="$ZEN_STABLE_NAME_BASE"
-    fi
-
-    log_info ""
-    
-
-    if [[ "$is_twilight" == 1 ]]; then
-        zsync_url="$ZEN_TWILIGHT.zsync"
-        appimage_url="$ZEN_TWILIGHT"
-    else
-        zsync_url="$ZEN_STABLE.zsync"
-        appimage_url="$ZEN_STABLE"
-    fi
 
     # Get the download directory using xdg-user-dir, using Downloads as default value
 	DOWNLOAD_DIR=$(xdg-user-dir DOWNLOAD || echo "${HOME}/Downloads")
@@ -277,23 +253,12 @@ check_for_updates() {
 }
 
 install_zen_browser() {
-    local is_twilight="$1"
     local appimage_url
     local file_base
-
-    if [[ "$is_twilight" == 1 ]]; then
-        file_base="$ZEN_TWILIGHT_NAME_BASE"
-    else
-        file_base="$ZEN_STABLE_NAME_BASE"
-    fi
+    file_base="$ZEN_STABLE_NAME_BASE"
 
     log_info ""
-
-    if [[ "$is_twilight" == 1 ]]; then
-        appimage_url="$ZEN_TWILIGHT"
-    else
-        appimage_url="$ZEN_STABLE"
-    fi
+    appimage_url="$ZEN_STABLE"
 
     log_warn "Downloading Zen from $appimage_url"
     log_info ""
@@ -306,17 +271,8 @@ install_zen_browser() {
 }
 
 main_menu() {
-    # Check if the script is in twilight mode.
-    local is_twilight
-    if [[ "$1" == "twilight" ]]; then
-        is_twilight=1
-        log_warn "The installer is in Twilight mode!"
-    else
-        is_twilight=0
-    fi
-
     # Show kawaii ASCII art
-    kawaii_art $is_twilight
+    kawaii_art
 
     log_info "(★^O^★) What would you like to do?"
     log_info "  1) Install"
@@ -333,18 +289,14 @@ main_menu() {
 
     case $main_choice in
         1)
-            install_zen_browser $is_twilight
+            install_zen_browser
             ;;
         2)
-            if [[ "$is_twilight" == 1 ]]; then
-                uninstall_appimage "$ZEN_TWILIGHT_NAME_BASE"
-            else
-                uninstall_appimage "$ZEN_STABLE_NAME_BASE"
-            fi
+            uninstall_appimage
             ;;
         3)
             if check_zsync_installed; then
-                check_for_updates $is_twilight
+                check_for_updates
             else
                 log_err "(•ˋ _ ˊ•) Invalid choice. Exiting..."
                 exit 1

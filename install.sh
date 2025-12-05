@@ -20,7 +20,7 @@ executable_path=$app_installation_directory/zen
 # Check OS
 if [[ "$(uname)" != "Linux" ]]; then
     echo "This script is only for Linux."
-    echo "Visit https://github.com/zen-browser/desktop#-installation to learn more about supported operating systems"
+    echo "Visit https://github.com/istnein/zenplus-desktop#-installation to learn more about supported operating systems"
     exit 1
 fi
 
@@ -39,7 +39,7 @@ case "$os_arch" in
 esac
 
 # Set the official package download URL
-official_package_location="https://github.com/zen-browser/desktop/releases/latest/download/zen.linux-$os_arch.tar.xz"
+official_package_location="https://github.com/istnein/zenplus-desktop/releases/latest/download/zen.linux-$os_arch.tar.xz"
 
 echo "Downloading the latest package"
 curl -L --progress-bar -o $tar_location $official_package_location
